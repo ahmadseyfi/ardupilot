@@ -9,6 +9,8 @@
 #include <unistd.h>
 #include <fenv.h>
 #include "fenv_polyfill.h"
+#include <stdio.h>
+#include "hello_world.h"
 
 using namespace HALSITL;
 
@@ -33,10 +35,18 @@ SITLScheduler::SITLScheduler(SITL_State *sitlState) :
     _sitlState(sitlState),
     stopped_clock_usec(0)
 {
+
 }
 
 void SITLScheduler::init(void *unused)
 {
+    printf("Initializing-------------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
+    say_hello();
+    for(int i=0 ; i< 10; i++)
+    {
+        printf("Hi\n");
+        usleep(1000000);
+    }
     gettimeofday(&_sketch_start_time,NULL);
 }
 

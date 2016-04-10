@@ -527,7 +527,8 @@ elif [ $USE_GDB == 1 ]; then
     }
     $autotest/run_in_terminal_window.sh "ardupilot (gdb)" gdb -x $tfile --args $cmd || exit 1
 else
-    $autotest/run_in_terminal_window.sh "ardupilot" $cmd || exit 1
+    gnome-terminal -e "bash -c \"$cmd; exec bash\""
+    #$autotest/run_in_terminal_window.sh "ardupilot" $cmd || exit 1
 fi
 fi
 

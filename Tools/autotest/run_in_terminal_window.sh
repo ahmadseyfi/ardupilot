@@ -5,7 +5,7 @@
 # Sigh: theres no common way of handling command line args :-(
 name="$1"
 shift
-echo "Starting $name : $*"
+echo "Startingjbcjayrcuwyuyuy $name : $*"
 # default to xterm as it has the most consistent options and can start minimised
 if [ -n "$DISPLAY" -a -x /usr/bin/xterm ]; then
   /usr/bin/xterm -iconic -xrm 'XTerm*selectToClipboard: true' -n "$name" -name "$name" -T "$name" -hold -e $* &
