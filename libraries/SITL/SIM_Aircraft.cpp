@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <sys/time.h>
 #include <unistd.h>
+#include "AP_HAL_SITL/sitl_ros_hal.h"
 
 #ifdef __CYGWIN__
 #include <windows.h>
@@ -301,7 +302,7 @@ uint64_t Aircraft::get_wall_time_us() const
     return last_ret_us;
 #else
     struct timeval tp;
-    gettimeofday(&tp,NULL);
+    sitl_ros_gettimeofday(&tp,NULL);
     return tp.tv_sec*1.0e6 + tp.tv_usec;
 #endif
 }

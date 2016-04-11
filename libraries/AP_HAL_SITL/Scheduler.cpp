@@ -10,7 +10,7 @@
 #include <fenv.h>
 #include "fenv_polyfill.h"
 #include <stdio.h>
-#include "hello_world.h"
+#include "sitl_ros_hal.h"
 
 using namespace HALSITL;
 
@@ -35,33 +35,40 @@ SITLScheduler::SITLScheduler(SITL_State *sitlState) :
     _sitlState(sitlState),
     stopped_clock_usec(0)
 {
-
+    printf("Here------------------->>>>>>>>>>>>2000\n");
+    //initialize the ros node
+    sitl_ros_init();
+    //usleep(2000);
 }
 
 void SITLScheduler::init(void *unused)
 {
-    printf("Initializing-------------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
-    say_hello();
-    for(int i=0 ; i< 10; i++)
-    {
-        printf("Hi\n");
-        usleep(1000000);
-    }
-    gettimeofday(&_sketch_start_time,NULL);
+    //get the current time
+    sitl_ros_gettimeofday(&_sketch_start_time,NULL);
+    //for test
+    printf("Here------------------->>>>>>>>>>>>2\n");
+    struct timeval tp1,tp2;
+    gettimeofday(&tp1,NULL);
+    sitl_ros_gettimeofday(&tp2,NULL);
+    printf("unix: %d, %d\n", tp1.tv_sec, tp1.tv_usec);
+    printf("ros: %d, %d\n", tp2.tv_sec, tp2.tv_usec);
+    //for test
 }
 
 uint64_t SITLScheduler::_micros64()
 {
     struct timeval tp;
-    gettimeofday(&tp,NULL);
+    sitl_ros_gettimeofday(&tp,NULL);
     uint64_t ret = 1.0e6*((tp.tv_sec + (tp.tv_usec*1.0e-6)) -
                           (_sketch_start_time.tv_sec +
                            (_sketch_start_time.tv_usec*1.0e-6)));
+    //printf("%d:%d\n", tp.tv_sec, tp.tv_usec);
     return ret;
 }
 
 uint64_t SITLScheduler::micros64()
 {
+    
     if (stopped_clock_usec) {
         return stopped_clock_usec;
     }
@@ -79,7 +86,7 @@ uint64_t SITLScheduler::millis64()
         return stopped_clock_usec/1000;
     }
     struct timeval tp;
-    gettimeofday(&tp,NULL);
+    sitl_ros_gettimeofday(&tp,NULL);
     uint64_t ret = 1.0e3*((tp.tv_sec + (tp.tv_usec*1.0e-6)) -
                           (_sketch_start_time.tv_sec +
                            (_sketch_start_time.tv_usec*1.0e-6)));
@@ -93,13 +100,14 @@ uint32_t SITLScheduler::millis()
 
 void SITLScheduler::delay_microseconds(uint16_t usec)
 {
+    //printf("Here------------------->>>>>>>>>>>>3\n");
     uint64_t start = micros64();
     uint64_t dtime;
     while ((dtime=(micros64() - start) < usec)) {
         if (stopped_clock_usec) {
             _sitlState->wait_clock(start+usec);
         } else {
-            usleep(usec - dtime);
+            sitl_ros_usleep(usec - dtime);
         }
     }
 }

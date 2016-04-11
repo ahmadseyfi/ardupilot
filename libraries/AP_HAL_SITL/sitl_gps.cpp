@@ -28,6 +28,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <fcntl.h>
+#include "sitl_ros_hal.h"
 
 #pragma GCC diagnostic ignored "-Wunused-result"
 
@@ -154,7 +155,7 @@ void SITL_State::_gps_send_ubx(uint8_t msgid, uint8_t *buf, uint16_t size)
 static void gps_time(uint16_t *time_week, uint32_t *time_week_ms)
 {
     struct timeval tv;
-    gettimeofday(&tv, NULL);
+    sitl_ros_gettimeofday(&tv, NULL);
     const uint32_t epoch = 86400*(10*365 + (1980-1969)/4 + 1 + 6 - 2) - 15;
     uint32_t epoch_seconds = tv.tv_sec - epoch;
     *time_week = epoch_seconds / (86400*7UL);
@@ -351,7 +352,7 @@ void SITL_State::_update_gps_mtk(const struct gps_data *d)
     struct tm tm;
     struct timeval tv;
 
-    gettimeofday(&tv, NULL);
+    sitl_ros_gettimeofday(&tv, NULL);
     tm = *gmtime(&tv.tv_sec);
     uint32_t hsec = (tv.tv_usec / (10000*20)) * 20; // always multiple of 20
 
@@ -408,7 +409,7 @@ void SITL_State::_update_gps_mtk16(const struct gps_data *d)
     struct tm tm;
     struct timeval tv;
 
-    gettimeofday(&tv, NULL);
+    sitl_ros_gettimeofday(&tv, NULL);
     tm = *gmtime(&tv.tv_sec);
     uint32_t millisec = (tv.tv_usec / (1000*200)) * 200; // always multiple of 200
 
@@ -466,7 +467,7 @@ void SITL_State::_update_gps_mtk19(const struct gps_data *d)
     struct tm tm;
     struct timeval tv;
 
-    gettimeofday(&tv, NULL);
+    sitl_ros_gettimeofday(&tv, NULL);
     tm = *gmtime(&tv.tv_sec);
     uint32_t millisec = (tv.tv_usec / (1000*200)) * 200; // always multiple of 200
 
@@ -527,7 +528,7 @@ void SITL_State::_update_gps_nmea(const struct gps_data *d)
     char lat_string[20];
     char lng_string[20];
 
-    gettimeofday(&tv, NULL);
+    sitl_ros_gettimeofday(&tv, NULL);
 
     tm = gmtime(&tv.tv_sec);
 
